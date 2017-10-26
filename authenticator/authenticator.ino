@@ -43,8 +43,8 @@ void setup()
 
 void loop()
 {
-	if (isWifiConnected)
-	{
+  if (isWifiConnected)
+  {
     base32.fromBase32(secret, sizeof(secret) - 1, (byte*&)hmacKey);
     
     time_t seconds = time(NULL);
@@ -71,7 +71,7 @@ void loop()
       }
     }
     Screen.draw(18, 5, 110, 6, timeBar);
-	}
+  }
 
   delay(200);
 }
