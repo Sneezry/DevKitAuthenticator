@@ -6,25 +6,26 @@
 #include "TOTP.h"
 #include "code.h"
 
-bool isWifiConnected = false;
 Base32 base32;
+TOTP *totp;
+
 unsigned char *hmacKey;
+unsigned char* newCode;
+
+unsigned char timeBar[92];
 unsigned char issuer[] = "DevKit Auth";
 unsigned char secret[] = "GEZDGNBVGY3TQOJQ";
 unsigned char account[] = "Sneezry";
-unsigned char* newCode;
+
 long steps = 0;
-int remain = 0;
-unsigned char remainBar[92];
-TOTP *totp;
+int timeLeft= 0;
+
+bool isWifiConnected = false;
 
 void setup()
 {
-  pinMode(USER_BUTTON_A, INPUT);
-  pinMode(USER_BUTTON_B, INPUT);
-
   Screen.clean();
-  Screen.print(1, "Connecting WiFi...\r\n");
+  Screen.print(1, "Syncing clock...");
 
   if(WiFi.begin() == WL_CONNECTED)
   {
@@ -36,22 +37,12 @@ void setup()
   else
   {
     Screen.clean();
-    Screen.print(1, "No WiFi.\r\n");
+    Screen.print(1, " No connection. ");
   }
 }
 
 void loop()
 {
-  // if (digitalRead(USER_BUTTON_A) == LOW)
-  // {
-  //   //Button A is pressed
-  // }
-
-  // if (digitalRead(USER_BUTTON_B) == LOW)
-  // {
-  //   //Button B is pressed
-  // }
-
 	if (isWifiConnected)
 	{
     base32.fromBase32(secret, sizeof(secret) - 1, (byte*&)hmacKey);
@@ -67,19 +58,19 @@ void loop()
       free(totp);
     }
 
-    remain = (long)seconds % 30 + 1;
+    timeLeft= (long)seconds % 30 + 1;
     int i;
     for (i = 0; i < 92; i++) {
-      if (i < remain * 3 + 2)
+      if (i < timeLeft* 3 + 2)
       {
-        remainBar[i] = 0x18;
+        timeBar[i] = 0x18;
       }
       else
       {
-        remainBar[i] = 0x00;
+        timeBar[i] = 0x00;
       }
     }
-    Screen.draw(18, 5, 110, 6, remainBar);
+    Screen.draw(18, 5, 110, 6, timeBar);
 	}
 
   delay(200);
