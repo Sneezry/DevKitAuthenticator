@@ -1,6 +1,6 @@
 # DevKit Authenticator
 
-Author: Zhe Li, zhe.li@microsoft.com
+Author: Zhe Li, lizhe@lizhe.org
 
 MIT License
 
